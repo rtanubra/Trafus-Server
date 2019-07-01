@@ -5,6 +5,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 
+const categoriesRouter = require('./categories/categories-router')
+
 
 const app = express()
 
@@ -14,9 +16,12 @@ app.use(morgan(morganOption))
 app.use(cors())
 app.use(helmet())
 
+
 app.get('/',(req,res)=>{
     res.send("Hello, world!")
 })
+
+app.use('/api/categories',categoriesRouter)
 
 function errorHandler(error, req,res,next){
     let response
@@ -29,5 +34,7 @@ function errorHandler(error, req,res,next){
     res.status(500).json(response)
 }
 app.use(errorHandler)
+
+
 
 module.exports = app
