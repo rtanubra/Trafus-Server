@@ -6,7 +6,7 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 
 const categoriesRouter = require('./categories/categories-router')
-
+const expensesRouter = require('./expenses/expenses-router')
 
 const app = express()
 
@@ -22,6 +22,7 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/categories',categoriesRouter)
+app.use('/api/expenses',expensesRouter)
 
 function errorHandler(error, req,res,next){
     let response
