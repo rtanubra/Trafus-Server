@@ -1,9 +1,9 @@
 const xss = require('xss')
 
 const CategoriesSerivce = {
-    getAllCategories(db){
-        console.log("here")
+    getAllCategories(db,team_id){
         return db.select('*').from('trafus_categories')
+            .where({team_id})
     },
 }
 
