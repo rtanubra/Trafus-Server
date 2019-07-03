@@ -25,6 +25,8 @@ categoriesRouter
         const {name, budget} = req.body
         const newCategory = {name, budget}
 
+        newCategory.name = xss(newCategory.name)
+        
         for (const [key, value] of Object.entries(newCategory))
             if (value == null)
         return res.status(400).json({
