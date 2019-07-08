@@ -26,7 +26,7 @@ categoriesRouter
         const newCategory = {name, budget}
 
         newCategory.name = xss(newCategory.name)
-        
+
         for (const [key, value] of Object.entries(newCategory))
             if (value == null)
         return res.status(400).json({
@@ -40,8 +40,29 @@ categoriesRouter
             .then(category=>{
                 return res.status(200).json(category)
             })
-
-
     })
 
+categoriesRouter
+    .route('/category/:category_id')
+    .get((req,res,next)=>{
+        const db = req.app.get('db')
+        const {category_id} = req.params
+        CategoriesService.getById(db,category_id)
+            .then(category=>{
+                return res.status(200).json(category)
+            })
+    })
+    .patch(jsonBodyParser,(req,res,next)=>{
+        const db = req.app.get('db')
+        const {category_id} = req.params
+        const {name, budget}= req.body
+        const updateCategory = {name,budget}
+        if (!name && !budget){
+            return res.status(400).json({error:"name or budget is required for an update"})
+        }
+        CategoriesService.updateById(db,category_id,updateCategory)
+            .then(result=>{
+                return res.status(204).end()
+            })
+    })
 module.exports = categoriesRouter
