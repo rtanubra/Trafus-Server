@@ -11,6 +11,14 @@ const ExpensesService = {
             .returning('*')
             .then(([expense])=> {return expense})
     },
+    getById(db,expense_id){
+
+        return db
+            .select('*').from('trafus_expenses').where({'id':expense_id})
+    },
+    updateById(db,expense_id,updateExpense){
+        return db('trafus_expenses').where({'id':expense_id}).update(updateExpense)
+    }
 }
 
 module.exports = ExpensesService

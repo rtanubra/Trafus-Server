@@ -30,4 +30,24 @@ expensesRouter
             })
     })
 
+expensesRouter
+    .route('/expense/:expense_id')
+    .get((req,res,next)=>{
+        const db= req.app.get('db')
+        const {expense_id}= req.params
+        ExpensesService.getById(db,expense_id).then(expenses=>{
+            return res.status(200).json(expenses[0])
+        })
+    })
+    .patch(jsonBodyParser,(req,res,next)=>{
+        const db = req.app.get('db')
+        const {name, expense} = req.body
+        const updatedBody = {name,expense}
+        updatedBody.id = req.params.expense_id
+        console.log(updatedBody)
+        ExpensesService.updateById(db,updatedBody.id,updatedBody).then(()=>{
+            return res.status(204).end()
+        })
+    })
+
 module.exports = expensesRouter
