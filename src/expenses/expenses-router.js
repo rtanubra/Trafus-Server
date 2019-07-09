@@ -32,12 +32,21 @@ expensesRouter
 
 expensesRouter
     .route('/expense/:expense_id')
-    .get((req,res,next)=>{
+    .all((req,res,next)=>{
         const db= req.app.get('db')
-        const {expense_id}= req.params
-        ExpensesService.getById(db,expense_id).then(expenses=>{
-            return res.status(200).json(expenses[0])
-        })
+        const id = req.params.expense_id
+        ExpensesService.getById(db,id).then(expense=>{
+            if (!expense){
+                return res.status(404).json({error:`Expense with id ${id} could not be found`})
+            }
+            else {
+                res.expense = expense
+                next()
+            }
+        }).catch(next)
+    })
+    .get((req,res,next)=>{
+        return res.status(200).json(res.expense)
     })
     .patch(jsonBodyParser,(req,res,next)=>{
         const db = req.app.get('db')

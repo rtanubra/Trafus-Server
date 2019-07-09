@@ -44,13 +44,20 @@ categoriesRouter
 
 categoriesRouter
     .route('/category/:category_id')
-    .get((req,res,next)=>{
+    .all((req,res,next)=>{
         const db = req.app.get('db')
-        const {category_id} = req.params
-        CategoriesService.getById(db,category_id)
-            .then(category=>{
-                return res.status(200).json(category)
-            })
+        const id = req.params.category_id
+        CategoriesService.getById(db,id).then(category=>{
+            if(!category){
+                return res.status(404).json({error:`Could not find Category with id ${id}`})
+            }else{
+                res.category = category
+                next()
+            }
+        }).catch(next)
+    })
+    .get((req,res,next)=>{
+        return res.status(200).json(res.category)
     })
     .patch(jsonBodyParser,(req,res,next)=>{
         const db = req.app.get('db')

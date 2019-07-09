@@ -14,7 +14,7 @@ const ExpensesService = {
     getById(db,expense_id){
 
         return db
-            .select('*').from('trafus_expenses').where({'id':expense_id})
+            .select('*').from('trafus_expenses').where({'id':expense_id}).first()
     },
     updateById(db,expense_id,updateExpense){
         return db('trafus_expenses').where({'id':expense_id}).update(updateExpense)

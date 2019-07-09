@@ -13,7 +13,7 @@ const CategoriesSerivce = {
             .then(([category])=>{return category})
     },
     getById(db,category_id){
-        return db.select('*').from('trafus_categories').where({'id':category_id})
+        return db.select('*').from('trafus_categories').where({'id':category_id}).first()
     },
     updateById(db,category_id,updateCategory){
         return db('trafus_categories').where({ 'id':category_id }).update(updateCategory)
