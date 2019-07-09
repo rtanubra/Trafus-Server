@@ -49,5 +49,13 @@ expensesRouter
             return res.status(204).end()
         })
     })
+    .delete((req,res,next)=>{
+        const db = req.app.get('db')
+        const id = req.params.expense_id
+        ExpensesService.deleteById(db,id).then(result=>{
+            console.log(result)
+            return res.status(204).end()
+        })
+    })
 
 module.exports = expensesRouter

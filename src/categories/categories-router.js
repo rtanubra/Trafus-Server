@@ -65,4 +65,11 @@ categoriesRouter
                 return res.status(204).end()
             })
     })
+    .delete((req,res,next)=>{
+        const db = req.app.get('db')
+        const id = parseInt(req.params.category_id)
+        CategoriesService.deleteById(db,id).then((numsRowsEffected)=>{
+            res.status(204).end()
+        })
+    })
 module.exports = categoriesRouter

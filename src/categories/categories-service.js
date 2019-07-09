@@ -17,6 +17,10 @@ const CategoriesSerivce = {
     },
     updateById(db,category_id,updateCategory){
         return db('trafus_categories').where({ 'id':category_id }).update(updateCategory)
+    },
+    deleteById(db,id){
+        console.log("here")
+        return db('trafus_categories').where({id}).delete()
     }
 }
 

@@ -18,6 +18,9 @@ const ExpensesService = {
     },
     updateById(db,expense_id,updateExpense){
         return db('trafus_expenses').where({'id':expense_id}).update(updateExpense)
+    },
+    deleteById(db,id){
+        return db('trafus_expenses').where({id}).delete()
     }
 }
 
