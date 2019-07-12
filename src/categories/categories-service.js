@@ -2,7 +2,7 @@ const xss = require('xss')
 
 const CategoriesSerivce = {
     getAllCategories(db,team_id){
-        return db.select('*').from('trafus_categories')
+        return db.select('*').from('trafus_categories').orderBy('id')
             .where({team_id})
     },
     insertCategory(db,newCategory){
@@ -10,7 +10,7 @@ const CategoriesSerivce = {
             .insert(newCategory)
             .into('trafus_categories')
             .returning('*')
-            .then(([category])=>{return category})
+            .then((category)=>{return category[0]})
     },
     getById(db,category_id){
         return db.select('*').from('trafus_categories').where({'id':category_id}).first()

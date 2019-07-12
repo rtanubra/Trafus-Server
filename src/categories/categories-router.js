@@ -25,13 +25,14 @@ categoriesRouter
         const {name, budget} = req.body
         const newCategory = {name, budget}
 
+        for (const [key, value] of Object.entries(newCategory)){
+            if (value == null){
+                return res.status(400).json({
+                    error: `Missing '${key}' in request body`
+                })
+            }
+        }
         newCategory.name = xss(newCategory.name)
-
-        for (const [key, value] of Object.entries(newCategory))
-            if (value == null)
-        return res.status(400).json({
-          error: `Missing '${key}' in request body`
-        })
 
         //don't allow this option when you are going from client
         newCategory.team_id= req.body.team_id ? req.body.team_id : team_id
