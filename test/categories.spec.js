@@ -1,7 +1,6 @@
 const app = require('../src/app')
 const knex = require('knex')
 require('dotenv').config()
-const testHelpers = require('./test-helpers')
 const fixture = require('../fixtures/fixtures')
 
 
@@ -138,7 +137,7 @@ describe('categories' ,()=>{
                         })
                 })
         })
-        
+
         it('returns 204 and changes the budget',()=>{
             return supertest(app)
                 .patch(`/api/categories/category/${target}/`)
@@ -159,6 +158,46 @@ describe('categories' ,()=>{
         
     })
     
+    describe('DELETE /api/categories/category/:category_id',()=>{
+        before('clean data',()=>{
+            return db.raw('truncate trafus_categories restart identity cascade')
+        })
+        context('no starting data',()=>{
+            it('returns 404 object not found when provided incorrect id',()=>{
+                return supertest(app)
+                    .delete('/api/categories/category/1')
+                    .expect(404)
+                    .expect({error:`Could not find Category with id 1`})
+            })
+        })
+        
+        context('with starting data',()=>{
+            before('add data',()=>{
+                return db.into('trafus_categories').insert(fixture.categories[0])
+            })
+            it('Returns 204 and deletes object',()=>{
+                //object added
+                return supertest(app)
+                    .get('/api/categories/category/1')
+                    .expect(200)
+                    .expect(fixture.categories_answer[0])
+                    .then(res=>{
+                        return supertest(app)
+                            .delete('/api/categories/category/1')
+                            .expect(204)
+                            .then(()=>{
+                                return supertest(app)
+                                    .get('/api/categories/category/1')
+                                    .expect(404)
+                                    .expect({error:`Could not find Category with id 1`})
+                            })
+                    })
+            })
+        })
+        after('clean data',()=>{
+            return db.raw('truncate trafus_categories restart identity cascade')
+        })
+    })
    
     after('disconnect from db',()=>{
         return db.destroy()
