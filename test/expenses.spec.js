@@ -179,6 +179,46 @@ describe('Expenses',()=>{
             })
         })
     })
+
+    describe('DELETE /api/expenses/expense/:expense_id',()=>{
+        before('clean data before tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+        beforeEach('fill data to query',()=>{
+            return db.into('trafus_expenses').insert(fixture.expenses)
+        })
+        afterEach('clean data after tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+        const bad_query = 900
+        const good_query = 1 
+        it('Returns 404 and error message stating expense cannot be found',()=>{
+            return supertest(app)
+                .delete(`/api/expenses/expense/${bad_query}`)
+                .expect(404)
+                .expect({error:`Expense with id ${bad_query} could not be found`})
+        })
+        it('Returns 204 and deletes the expense when provided correct id',()=>{
+            //validate prior to delete the expense exists
+            return supertest(app)
+                .get(`/api/expenses/expense/${good_query}`)
+                .expect(200)
+                .expect(fixture.expenses_answer[good_query-1])
+                .then(()=>{
+                    return supertest(app)
+                        .delete(`/api/expenses/expense/${good_query}`)
+                        .expect(204)
+                        .then(()=>{
+                            //delete persists removes expense from list
+                            return supertest(app)
+                                .get(`/api/expenses/expense/${good_query}`)
+                                .expect(404)
+                                .expect({error:`Expense with id ${good_query} could not be found`})
+                        })
+                })
+        })
+    })
+
     after('massive cleaning',()=>{
         return db.raw('truncate trafus_categories restart identity cascade')
     })
