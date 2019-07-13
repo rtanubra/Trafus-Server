@@ -22,7 +22,6 @@ expensesRouter
         const {name, expense, category_id} = req.body
         const newExpense = {name,expense,category_id}
         for (const [key, value] of Object.entries(newExpense)){
-            console.log(key,value)
             if (newExpense[key]==null){
                 return res.status(400).json({error:`${key} is required to add an expense`})
             }
@@ -59,7 +58,6 @@ expensesRouter
         const {name, expense} = req.body
         const updatedBody = {name,expense}
         updatedBody.id = req.params.expense_id
-        console.log(updatedBody)
         ExpensesService.updateById(db,updatedBody.id,updatedBody).then(()=>{
             return res.status(204).end()
         })
@@ -68,7 +66,6 @@ expensesRouter
         const db = req.app.get('db')
         const id = req.params.expense_id
         ExpensesService.deleteById(db,id).then(result=>{
-            console.log(result)
             return res.status(204).end()
         })
     })

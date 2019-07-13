@@ -88,6 +88,97 @@ describe('Expenses',()=>{
 
     })
 
+    describe('GET /api/expenses/expense/:expense_id',()=>{
+        before('clean data before tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+        before('fill data to query',()=>{
+            return db.into('trafus_expenses').insert(fixture.expenses)
+        })
+        after('clean data after tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+        it('returns 200 and the selected expense if exists',()=>{
+            const query_select = 1
+            return supertest(app)
+                .get(`/api/expenses/expense/${query_select}`)
+                .expect(200)
+                .expect(fixture.expenses_answer[query_select-1])
+        })
+        it('returns 404 and error message expense does not exist',()=>{
+            const bad_query = 66
+            return supertest(app)
+                .get(`/api/expenses/expense/${bad_query}`)
+                .expect(404)
+                .expect({error:`Expense with id ${bad_query} could not be found`})
+        })
+    })
+
+    describe('PATCH /api/expenses/expense/:expense_id',()=>{
+        before('clean data before tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+        beforeEach('fill data to query',()=>{
+            return db.into('trafus_expenses').insert(fixture.expenses)
+        })
+        afterEach('clean data after tests',()=>{
+            return db.raw('truncate trafus_expenses restart identity')
+        })
+
+        const changeObject = {
+            name:"some new name",
+            expense:36
+        }
+        const changes = ["name","expense"]
+        const query_select =1 
+        
+        describe('change one thing at a time',()=>{
+
+            it('Returns 204 and correctly changes the name',()=>{
+                const newExpense = fixture.expenses_answer[query_select-1]
+                return supertest(app)
+                    .patch(`/api/expenses/expense/${query_select}`)
+                    .send({name:changeObject.name})
+                    .expect(204)
+                    .then(()=>{
+                        return supertest(app)
+                            .get(`/api/expenses/expense/${query_select}`)
+                            .expect(200)
+                            .then(res=>{
+                                expect(res.body.name).to.eql(changeObject.name)
+                                expect(res.body.expense).to.eql(newExpense.expense)
+                                expect(res.body.id).to.eql(newExpense.id)
+                                expect(res.body.category_id).to.eql(newExpense.category_id)
+                            })
+                    })
+            })
+            it('Returns 204 and correctly changes the expense',()=>{
+                const newExpense = fixture.expenses_answer[query_select-1]
+                return supertest(app)
+                    .patch(`/api/expenses/expense/${query_select}`)
+                    .send({expense:changeObject.expense})
+                    .expect(204)
+                    .then(()=>{
+                        return supertest(app)
+                            .get(`/api/expenses/expense/${query_select}`)
+                            .expect(200)
+                            .then(res=>{
+                                expect(res.body.name).to.eql(newExpense.name)
+                                expect(res.body.expense).to.eql(changeObject.expense)
+                                expect(res.body.id).to.eql(newExpense.id)
+                                expect(res.body.category_id).to.eql(newExpense.category_id)
+                            })
+                    })
+            })
+            it('returns 404 and error message expense does not exist',()=>{
+                const bad_query = 66
+                return supertest(app)
+                    .get(`/api/expenses/expense/${bad_query}`)
+                    .expect(404)
+                    .expect({error:`Expense with id ${bad_query} could not be found`})
+            })
+        })
+    })
     after('massive cleaning',()=>{
         return db.raw('truncate trafus_categories restart identity cascade')
     })
