@@ -21,12 +21,18 @@ expensesRouter
         const db = req.app.get('db')
         const {name, expense, category_id} = req.body
         const newExpense = {name,expense,category_id}
+        for (const [key, value] of Object.entries(newExpense)){
+            console.log(key,value)
+            if (newExpense[key]==null){
+                return res.status(400).json({error:`${key} is required to add an expense`})
+            }
+        }
         ExpensesService.insertExpense(db,newExpense)
             .then(expense=>{
                 if(!expense){
-                    return res.status(404).json({error:{message:`Category does not exist`}}) 
+                    return res.status(404).json({error:`Category does not exist`}) 
                 }
-                return res.status(200).json(expense)
+                return res.status(204).json(expense)
             })
     })
 
