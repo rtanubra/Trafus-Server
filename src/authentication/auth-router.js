@@ -6,21 +6,26 @@ const jsonBodyParser = express.json()
 const xss = require('xss')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const atob = require('atob')
 
 authRouter
     .route('/login')
     .post(jsonBodyParser,(req,res,next)=>{
         const {user_name, password} = req.body 
+        const user_name_decrypt = atob(user_name)
+        const password_decrypt = atob(password)
+        console.log(user_name,password)
+        console.log(user_name_decrypt,password_decrypt)
         if(!user_name || !password){
             return res.status(400).json({error:'Username and Password are required'})
         }
         const db = req.app.get('db')
-        AuthService.getUserByUsername(db,user_name,password)
+        AuthService.getUserByUsername(db,user_name_decrypt)
             .then(user=>{
                 if(!user){
                     return res.status(400).json({error:'Incorrect Username or password'})
                 }
-                if(!AuthService.comparePasswords(password,user.password)){
+                if(!AuthService.comparePasswords(password_decrypt,user.password)){
                     return res.status(400).json({error:'Incorrect Username or password'})
                 }
                 else{

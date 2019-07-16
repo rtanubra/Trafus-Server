@@ -3,7 +3,7 @@ const config = require('../config')
 const bcrypt = require('bcrypt')
 
 const AuthService = {
-    getUserByUsername(db,user_name,password){
+    getUserByUsername(db,user_name){
         return db.select('*').from('trafus_users').where({user_name}).first()
     },
     comparePasswords(pass_plain,pass_hash){
