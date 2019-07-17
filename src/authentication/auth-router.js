@@ -31,11 +31,10 @@ authRouter
                 else{
                     //return res.status(200).json({message:`Authenticated as ${user_name}`})
                     const subject = user.user_name
-                    const payload = {user_id:user.id}
+                    const payload = {user_id:user.id,team_id:user.team_id}
                     const JsonWebToken=AuthService.createJwt(subject, payload)
                     return res.status(200).json({authToken:JsonWebToken})
                 }
-
             })
     })
 

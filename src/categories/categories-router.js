@@ -4,7 +4,7 @@ const CategoriesService = require('./categories-service')
 const categoriesRouter = express.Router()
 const jsonBodyParser = express.json()
 const xss = require('xss')
-
+const { requireAuth } = require('../middleware/jwt-auth')
 categoriesRouter
     .route('/:team_id')
     .get((req,res,next)=>{
@@ -18,7 +18,7 @@ categoriesRouter
                 return res.status(200).json(categories)
             })
     })
-    .post(jsonBodyParser,(req,res,next)=>{
+    .post(jsonBodyParser,requireAuth,(req,res,next)=>{
         const db = req.app.get('db')
         const {team_id} = req.params
 

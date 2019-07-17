@@ -4,6 +4,7 @@ const ExpensesService = require('./expenses-service')
 const expensesRouter = express.Router()
 const jsonBodyParser = express.json()
 const xss = require('xss')
+const { requireAuth } = require('../middleware/jwt-auth')
 
 expensesRouter
     .route('/')
