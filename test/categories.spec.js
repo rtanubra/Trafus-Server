@@ -2,7 +2,21 @@ const app = require('../src/app')
 const knex = require('knex')
 require('dotenv').config()
 const fixture = require('../fixtures/fixtures')
+const AuthService = require('../src/authentication/auth-service')
+const jwt = require('jsonwebtoken')
 
+function makeHeader(secret){
+    const token = jwt.sign({user_id:1,team_id:1},secret, {
+            subject:"goodTestUser",
+            algorithm: 'HS256'
+    })
+    return `bearer ${token}`
+}
+
+const goodHeader = makeHeader(process.env.JWT_SECRET)
+const badHeader = makeHeader("someHeader")
+console.log(goodHeader)
+console.log(badHeader)
 
 describe('categories' ,()=>{
     let db 
@@ -46,8 +60,8 @@ describe('categories' ,()=>{
         })
     })
 
-    describe('POST /api/categories/1 ',()=>{
-        before('clean data',()=>{
+    describe.only('POST /api/categories/1 ',()=>{
+        beforeEach('clean data',()=>{
             return db.raw('truncate trafus_categories restart identity cascade')
         })
         it('Returns 200 when posting GOOD new category also test it PERSISTS',()=>{
@@ -55,19 +69,46 @@ describe('categories' ,()=>{
             return supertest(app)
                 .post('/api/categories/1')
                 .send(category)
+                .set('Authorization',goodHeader)
                 .expect(200)
                 .expect(fixture.categories_answer[0]).then(postRes=>{
                     return supertest(app)
                         .get('/api/categories/1')
+                        .send({budget:20})
                         .expect(200)
                         .expect([fixture.categories_answer[0]])
                 })
+        })
+        context('Validating authentication',()=>{
+            beforeEach('clean data',()=>{
+                return db.raw('truncate trafus_categories restart identity cascade')
+            })
+            afterEach('clean data',()=>{
+                return db.raw('truncate trafus_categories restart identity cascade')
+            })
+
+            it(`Returns 401 missing bearer token when no authentication provided `,()=>{
+                return supertest(app)
+                    .post('/api/categories/1')
+                    .send(fixture.categories[0])
+                    .expect(401)
+                    .expect({error:"Missing Bearer Token"})
+            })
+            it('Returns 401 with Unauthorized Request token when sending incorrect header',()=>{
+                return supertest(app)
+                    .post('/api/categories/1')
+                    .send(fixture.categories[0])
+                    .set('Authorization', badHeader)
+                    .expect(401)
+                    .expect({"error": "Unauthorized Request"})
+            })
         })
         context('Returns 400 when posting INCOMPLETE category data should not persist',()=>{
             it(`It returns 400 and {error: "Missing 'name' in request body"}`,()=>{
                 return supertest(app)
                     .post('/api/categories/1')
                     .send({budget:20})
+                    .set('Authorization',goodHeader)
                     .expect(400)
                     .expect({error: "Missing 'name' in request body"})
             })
@@ -75,6 +116,7 @@ describe('categories' ,()=>{
                 return supertest(app)
                     .post('/api/categories/1')
                     .send({name:"Incomplete category"})
+                    .set('Authorization',goodHeader)
                     .expect(400)
                     .expect({error: "Missing 'budget' in request body"})
             })

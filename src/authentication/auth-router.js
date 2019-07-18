@@ -14,8 +14,6 @@ authRouter
         const {user_name, password} = req.body 
         const user_name_decrypt = atob(user_name)
         const password_decrypt = atob(password)
-        console.log(user_name,password)
-        console.log(user_name_decrypt,password_decrypt)
         if(!user_name || !password){
             return res.status(400).json({error:'Username and Password are required'})
         }

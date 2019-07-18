@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 categories = [
     {name:'Food and wine', budget:200, team_id:1},
     {name:'Insurance', budget:300, team_id:1},

@@ -16,9 +16,9 @@ categoriesRouter
                     return res.status(404).json({error:`Category does not exist`})
                 }
                 return res.status(200).json(categories)
-            })
+            }).catch(next)
     })
-    .post(jsonBodyParser,requireAuth,(req,res,next)=>{
+    .post(requireAuth,jsonBodyParser,(req,res,next)=>{
         const db = req.app.get('db')
         const {team_id} = req.params
 
@@ -40,7 +40,7 @@ categoriesRouter
         CategoriesService.insertCategory(db,newCategory)
             .then(category=>{
                 return res.status(200).json(category)
-            })
+            }).catch(next)
     })
 
 categoriesRouter
