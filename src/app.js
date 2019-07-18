@@ -8,6 +8,7 @@ const { NODE_ENV } = require('./config')
 const categoriesRouter = require('./categories/categories-router')
 const expensesRouter = require('./expenses/expenses-router')
 const authRouter = require('./authentication/auth-router')
+const userRouter = require('./users/users-router')
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.get('/',(req,res)=>{
 app.use('/api/categories',categoriesRouter)
 app.use('/api/expenses',expensesRouter)
 app.use('/api/auth',authRouter)
+app.use('/api/users',userRouter)
 
 function errorHandler(error, req,res,next){
     let response
