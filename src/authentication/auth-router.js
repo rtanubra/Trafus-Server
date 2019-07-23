@@ -14,8 +14,6 @@ authRouter
         const {user_name, password} = req.body 
         const user_name_decrypt = atob(user_name)
         const password_decrypt = atob(password)
-        console.log(user_name,password)
-        console.log(user_name_decrypt,password_decrypt)
         if(!user_name || !password){
             return res.status(400).json({error:'Username and Password are required'})
         }
@@ -31,9 +29,9 @@ authRouter
                 else{
                     //return res.status(200).json({message:`Authenticated as ${user_name}`})
                     const subject = user.user_name
-                    const payload = {user_id:user.id}
+                    const payload = {user_id:user.id,team_id:user.team_id}
                     const JsonWebToken=AuthService.createJwt(subject, payload)
-                    return res.status(200).json({authToken:JsonWebToken})
+                    return res.status(200).json({authToken:JsonWebToken,payload:payload})
                 }
 
             })
