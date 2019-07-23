@@ -3,7 +3,6 @@ const xss = require('xss')
 const CategoriesSerivce = {
     getAllCategories(db,team_id){
         return db.select('*').from('trafus_categories').orderBy('id')
-            .where({team_id})
     },
     insertCategory(db,newCategory){
         return db

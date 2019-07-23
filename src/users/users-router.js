@@ -10,6 +10,13 @@ const ValidateHelper = require('../validator/validator')
 
 usersRouter
     .route('/')
+    .patch(jsonBodyParser,(req,res,next)=>{
+        const {id,team_id} = req.body
+        const db = req.app.get('db')
+        UsersService.updateById(db,id,{team_id}).then((users)=>{
+            return res.status(200).json(users[0])
+        })
+    })
     .post(jsonBodyParser,(req,res,next)=>{
         let {user_name,password} = req.body
         //make sure both are there
@@ -39,11 +46,22 @@ usersRouter
             if (user){
                 return res.status(400).json({error:`${user_name} is already taken choose another`})
             }
-            UsersService.postToDatabaseBasic(db,newUser).then(()=>{
-                return res.status(204).end()
+            UsersService.postToDatabaseBasic(db,newUser).then((user)=>{
+                return res.status(200).json(user)
             })
         })
         
     })
-
+usersRouter
+    .route('/:userId')
+    .get((req,res,next)=>{
+        const db= req.app.get('db')
+        const id = req.params.userId
+        UsersService.getById(db,id).then(user=>{
+            if(!user){
+                return res.status(404).json({error:`User with id ${id} does not exist`})
+            }
+            return res.status(200).json(user)
+        })
+    })
 module.exports = usersRouter
