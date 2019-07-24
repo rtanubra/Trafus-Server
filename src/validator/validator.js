@@ -15,7 +15,11 @@ const ValidateHelper = {
         if(!patAlpha.test(name)){
             return [false, "Should contain alphabetical characters"]
         }
+<<<<<<< HEAD
         const patBadCharacters = /[^a-zA-Z _. 0-9]/
+=======
+        const patBadCharacters = /[^0-9a-zA-Z _. ]/
+>>>>>>> feateure/register
         if(patBadCharacters.test(name)){
             return [false,"Should only contain alphanumeric, underscores '_', periods'.' spaces ' ' ."]
         }
@@ -37,7 +41,11 @@ const ValidateHelper = {
         if(!patAlpha.test(name)){
             return [false, "Should contain alphabetical characters"]
         }
+<<<<<<< HEAD
         const patBadCharacters = /[^a-zA-Z _.0-9]/
+=======
+        const patBadCharacters = /[^0-9a-zA-Z _.]/
+>>>>>>> feateure/register
         if(patBadCharacters.test(name)){
             return [false,"Should only contain alphanumeric, underscores '_', periods'.'."]
         }
