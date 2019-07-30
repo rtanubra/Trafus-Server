@@ -1,2 +1,2 @@
 ALTER TABLE trafus_teams
-    ADD password VARCHAR(15);
+    ADD password VARCHAR(150);

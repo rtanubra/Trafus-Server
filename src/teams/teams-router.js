@@ -16,16 +16,23 @@ teamsRouter
     })
     .post(jsonBodyParser,(req,res,next)=>{
         const db= req.app.get('db')
-        const {name} = req.body
+        const {name,password} = req.body
         if (!name){
             return res.status(400).json({error:"Name is required"})
         }
+        
         const valid = ValidateHelper.nameCheck(name)
         if (!valid[0]){
             return res.status(400).json({error:`Team name ${valid[1]}`})
         }
-        
         const newTeam = {name}
+        if (password){
+            const validPass = ValidateHelper.passwordCheck(password)
+            if (!validPass[0]){
+                return res.status(400).json({error:`Password ${validPass[1]}`})
+            }
+            newTeam.password = password
+        }
         TeamsService.getAllTeams(db).then(teams=>{
             const teamsNames = teams.map(team=>{
                 return team.name
@@ -36,6 +43,19 @@ teamsRouter
             TeamsService.postTeam(db,newTeam).then((team)=>{
                 return res.status(200).json(team[0])
             })
+        })
+    })
+
+teamsRouter
+    .route('/:teamId')
+    .get((req,res,next)=>{
+        const db = req.app.get('db')
+        const {teamId} = req.params
+        TeamsService.getTeamById(db,teamId).then((team)=>{
+            if(!team){
+                return res.status(404).json({error:`${teamId} is not a valid teamId`})
+            }
+            return res.status(200).json(team)
         })
     })
 

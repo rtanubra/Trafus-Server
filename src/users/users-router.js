@@ -1,21 +1,39 @@
 const express = require('express')
 const UsersService = require('./users-service')
+const TeamsService = require('../teams/teams-service')
 
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 const xss = require('xss')
 const atob = require('atob')
-
+const bcrypt = require('bcrypt')
 const ValidateHelper = require('../validator/validator')
 
 usersRouter
     .route('/')
     .patch(jsonBodyParser,(req,res,next)=>{
-        const {id,team_id} = req.body
+        const {id,team_id,password} = req.body
         const db = req.app.get('db')
-        UsersService.updateById(db,id,{team_id}).then((users)=>{
-            return res.status(200).json(users[0])
+        TeamsService.getTeamById(db,team_id).then(team=>{
+            if(!team){
+                return res.status(404).json({error:`${team_id} is not a valid teamId`})
+            }
+            
+            if (team.password){
+                if (!password){
+                    return res.status(400).json({error:`Team password is required`})
+                }
+                if(!bcrypt.compareSync(password,team.password)){
+                    return res.status(400).json({error:`Incorrect team password provided`})
+                }
+            }
+
+            UsersService.updateById(db,id,{team_id}).then((users)=>{
+                return res.status(200).json(users[0])
+            })
+            
         })
+
     })
     .post(jsonBodyParser,(req,res,next)=>{
         let {user_name,password} = req.body
