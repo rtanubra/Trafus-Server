@@ -2,7 +2,7 @@ const xss = require('xss')
 
 const ExpensesService = {
     getAllExpense(db){
-        return db.select('*').from('trafus_expenses').orderBy('id')
+        return db.select('*').from('trafus_expenses').orderBy('id','desc')
     },
     insertExpense(db, newExpense){
         return db
