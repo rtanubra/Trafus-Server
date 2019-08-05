@@ -1,5 +1,6 @@
 const express = require('express')
 const ExpensesService = require('./expenses-service')
+const UsersService = require('../users/users-service')
 
 const expensesRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -25,6 +26,27 @@ expensesRouter
             if (newExpense[key]==null){
                 return res.status(400).json({error:`${key} is required to add an expense`})
             }
+        }
+        const {date_created, creator_id} = req.body
+        if (!date_created){
+            newExpense.date_created = new Date()
+        }
+        else {
+            //requires validation
+            newExpense.date_created= date_created
+        }
+        if (!creator_id){
+            newExpense.creator_id = 1
+            
+        } else {
+            //requires validation user exists or else db will kick crazy errors.
+            UsersService.getById(req.app.get('db'),creator_id).then(user=>{
+                if(!user){
+                    return res.status(404).json({error:`User does not exist`})
+                }
+                newExpense.creator_id = creator_id
+            })
+            //below should wait until validation completes
         }
         ExpensesService.insertExpense(db,newExpense)
             .then(expense=>{

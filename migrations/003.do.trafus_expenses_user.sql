@@ -1,2 +1,2 @@
 ALTER TABLE trafus_expenses
-    ADD creator_id INTEGER NOT NULL DEFAULT 1;
+    ADD creator_id INTEGER REFERENCES trafus_users(id) ON DELETE CASCADE NOT NULL DEFAULT 1;
