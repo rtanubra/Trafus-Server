@@ -11,6 +11,12 @@ const ValidateHelper = require('../validator/validator')
 
 usersRouter
     .route('/')
+    .get((req,res,next)=>{
+        const db=req.app.get('db')
+        UsersService.getAll(db).then(users=>{
+            return res.status(200).json(users)
+        })
+    })
     .patch(jsonBodyParser,(req,res,next)=>{
         const {id,team_id,password} = req.body
         const db = req.app.get('db')

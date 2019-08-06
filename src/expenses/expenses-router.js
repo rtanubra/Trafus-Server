@@ -20,14 +20,13 @@ expensesRouter
     })
     .post(jsonBodyParser,(req,res,next)=>{
         const db = req.app.get('db')
-        const {name, expense, category_id} = req.body
+        const {name, expense, category_id,creator_id,date_created} = req.body
         const newExpense = {name,expense,category_id}
         for (const [key, value] of Object.entries(newExpense)){
             if (newExpense[key]==null){
                 return res.status(400).json({error:`${key} is required to add an expense`})
             }
         }
-        const {date_created, creator_id} = req.body
         if (!date_created){
             newExpense.date_created = new Date()
         }
@@ -36,17 +35,9 @@ expensesRouter
             newExpense.date_created= date_created
         }
         if (!creator_id){
-            newExpense.creator_id = 1
-            
-        } else {
-            //requires validation user exists or else db will kick crazy errors.
-            UsersService.getById(req.app.get('db'),creator_id).then(user=>{
-                if(!user){
-                    return res.status(404).json({error:`User does not exist`})
-                }
-                newExpense.creator_id = creator_id
-            })
-            //below should wait until validation completes
+            newExpense.creator_id=1
+        }else{
+            newExpense.creator_id=creator_id
         }
         ExpensesService.insertExpense(db,newExpense)
             .then(expense=>{

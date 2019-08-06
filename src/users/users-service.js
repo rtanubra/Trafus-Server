@@ -13,6 +13,9 @@ const UsersService = {
         const team_id = 1
         return db.insert({user_name,password,name,team_id}).into('trafus_users').returning("*")
     },
+    getAll(db){
+        return db.select('id',"user_name").from('trafus_users')
+    },
     updateById(db,id,update){
         return db('trafus_users').where({id}).update(update).returning("*")
     },
