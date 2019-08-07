@@ -44,10 +44,10 @@ categoriesRouter
     })
 
 categoriesRouter
-    .route('/category/:category_id')
+    .route('/category/:categoryId')
     .all((req,res,next)=>{
         const db = req.app.get('db')
-        const id = req.params.category_id
+        const id = req.params.categoryId
         CategoriesService.getById(db,id).then(category=>{
             if(!category){
                 return res.status(404).json({error:`Could not find Category with id ${id}`})
@@ -62,20 +62,20 @@ categoriesRouter
     })
     .patch(jsonBodyParser,(req,res,next)=>{
         const db = req.app.get('db')
-        const {category_id} = req.params
+        const {categoryId} = req.params
         const {name, budget}= req.body
         const updateCategory = {name,budget}
         if (!name && !budget){
             return res.status(400).json({error:"name or budget is required for an update"})
         }
-        CategoriesService.updateById(db,category_id,updateCategory)
+        CategoriesService.updateById(db,categoryId,updateCategory)
             .then(result=>{
                 return res.status(204).end()
             })
     })
     .delete((req,res,next)=>{
         const db = req.app.get('db')
-        const id = parseInt(req.params.category_id)
+        const id = parseInt(req.params.categoryId)
         CategoriesService.deleteById(db,id).then((numsRowsEffected)=>{
             res.status(204).end()
         })
