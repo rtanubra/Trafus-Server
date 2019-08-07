@@ -15,7 +15,11 @@ create a postgres database and create .env file using example:
 example.env.txt
 
 #### `Migrate database`
-run npm run migrate to migrate database
+`npm run migrate` to migrate database
+
+`npm run migrate-production` to migrate production database. 
+
+This requires you to create a production database and point to it.
 
 #### `Optional seed database`
 seeds are located in ./seeds
