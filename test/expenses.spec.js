@@ -63,7 +63,7 @@ describe('Expenses',()=>{
                         return supertest(app)
                             .get('/api/expenses/')
                             .expect(200)
-                            .expect([fixture.expenses_answer[0]])
+                            .expect([fixture.expenses_answer[fixture.expenses_answer.length-1]])
                     })
             })
         })
@@ -103,7 +103,7 @@ describe('Expenses',()=>{
             return supertest(app)
                 .get(`/api/expenses/expense/${query_select}`)
                 .expect(200)
-                .expect(fixture.expenses_answer[query_select-1])
+                .expect(fixture.expenses_answer[fixture.expenses_answer.length-query_select])
         })
         it('returns 404 and error message expense does not exist',()=>{
             const bad_query = 66
@@ -135,7 +135,7 @@ describe('Expenses',()=>{
         describe('change one thing at a time',()=>{
 
             it('Returns 204 and correctly changes the name',()=>{
-                const newExpense = fixture.expenses_answer[query_select-1]
+                const newExpense = fixture.expenses_answer[fixture.expenses_answer.length-query_select]
                 return supertest(app)
                     .patch(`/api/expenses/expense/${query_select}`)
                     .send({name:changeObject.name})
@@ -153,7 +153,7 @@ describe('Expenses',()=>{
                     })
             })
             it('Returns 204 and correctly changes the expense',()=>{
-                const newExpense = fixture.expenses_answer[query_select-1]
+                const newExpense = fixture.expenses_answer[fixture.expenses_answer.length-query_select]
                 return supertest(app)
                     .patch(`/api/expenses/expense/${query_select}`)
                     .send({expense:changeObject.expense})
@@ -203,7 +203,7 @@ describe('Expenses',()=>{
             return supertest(app)
                 .get(`/api/expenses/expense/${good_query}`)
                 .expect(200)
-                .expect(fixture.expenses_answer[good_query-1])
+                .expect(fixture.expenses_answer[fixture.expenses_answer.length-good_query])
                 .then(()=>{
                     return supertest(app)
                         .delete(`/api/expenses/expense/${good_query}`)
