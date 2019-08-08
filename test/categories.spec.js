@@ -2,6 +2,7 @@ const app = require('../src/app')
 const knex = require('knex')
 require('dotenv').config()
 const fixture = require('../fixtures/fixtures')
+const testHelpers = require('../fixtures/testHelpers')
 
 
 describe('categories' ,()=>{
@@ -40,7 +41,9 @@ describe('categories' ,()=>{
             it('returns 200 and all categoties',()=>{
                 return supertest(app)
                     .get('/api/categories/1')
-                    .expect(200,fixture.categories_answer)
+                    .expect(200).expect((res)=>{
+                        expect(res.body).to.eql(fixture.categories_answer)
+                    })
             })
 
         })
@@ -56,11 +59,11 @@ describe('categories' ,()=>{
                 .post('/api/categories/1')
                 .send(category)
                 .expect(200)
-                .expect(fixture.categories_answer[0]).then(postRes=>{
+                .expect(fixture.categories_answer[2]).then(postRes=>{
                     return supertest(app)
                         .get('/api/categories/1')
                         .expect(200)
-                        .expect([fixture.categories_answer[0]])
+                        .expect([fixture.categories_answer[2]])
                 })
         })
         context('Returns 400 when posting INCOMPLETE category data should not persist',()=>{
@@ -95,7 +98,7 @@ describe('categories' ,()=>{
             return supertest(app)
                 .get('/api/categories/category/1')
                 .expect(200)
-                .expect(fixture.categories_answer[0])
+                .expect(fixture.categories_answer[2])
         })
         it('returns 404 object not found when provided incorrect id',()=>{
             return supertest(app)
@@ -131,9 +134,9 @@ describe('categories' ,()=>{
                         .expect(200)
                         .then(res=>{
                             expect(res.body.name).to.eql(newName)
-                            expect(res.body.budget).to.eql(fixture.categories_answer[target-1].budget)
-                            expect(res.body.id).to.eql(fixture.categories_answer[target-1].id)
-                            expect(res.body.team_id).to.eql(fixture.categories_answer[target-1].team_id)
+                            expect(res.body.budget).to.eql(fixture.categories_answer[target+1].budget)
+                            expect(res.body.id).to.eql(fixture.categories_answer[target+1].id)
+                            expect(res.body.team_id).to.eql(fixture.categories_answer[target+1].team_id)
                         })
                 })
         })
@@ -148,10 +151,10 @@ describe('categories' ,()=>{
                         .get(`/api/categories/category/${target}/`)
                         .expect(200)
                         .then(res=>{
-                            expect(res.body.name).to.eql(fixture.categories_answer[target-1].name)
+                            expect(res.body.name).to.eql(fixture.categories_answer[target+1].name)
                             expect(res.body.budget).to.eql(newBudget)
-                            expect(res.body.id).to.eql(fixture.categories_answer[target-1].id)
-                            expect(res.body.team_id).to.eql(fixture.categories_answer[target-1].team_id)
+                            expect(res.body.id).to.eql(fixture.categories_answer[target+1].id)
+                            expect(res.body.team_id).to.eql(fixture.categories_answer[target+1].team_id)
                         })
                 })
         })
@@ -180,7 +183,7 @@ describe('categories' ,()=>{
                 return supertest(app)
                     .get('/api/categories/category/1')
                     .expect(200)
-                    .expect(fixture.categories_answer[0])
+                    .expect(fixture.categories_answer[2])
                     .then(res=>{
                         return supertest(app)
                             .delete('/api/categories/category/1')

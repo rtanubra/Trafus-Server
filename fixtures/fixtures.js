@@ -4,9 +4,9 @@ categories = [
     {name:'Go Trains', budget:260, team_id:1}
 ]
 categories_answer = [
-    {name:'Food and wine', budget:200, team_id:1,id:1},
+    {name:'Go Trains', budget:260, team_id:1,id:3},
     {name:'Insurance', budget:300, team_id:1,id:2},
-    {name:'Go Trains', budget:260, team_id:1,id:3}
+    {name:'Food and wine', budget:200, team_id:1,id:1}
 ]
 expenses=[
     {name:'test_1_expense',expense:30, category_id:1},
