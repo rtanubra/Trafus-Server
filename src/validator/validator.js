@@ -1,7 +1,7 @@
 const ValidateHelper = {
     nameCheck(name){
         if (name.length<3 || name.length>20){
-            return [false,"Should be between 4-20 characters"]
+            return [false,"Should be between 3-20 characters"]
         }
         if (name.startsWith(" ")|| name.endsWith(" ")){
             return [false,"Should not begin or end with a space ' '. "]
@@ -23,7 +23,7 @@ const ValidateHelper = {
     },
     user_nameCheck(name){
         if (name.length<3 || name.length>20){
-            return [false,"Should be between 4-20 characters"]
+            return [false,"Should be between 3-20 characters"]
         }
         if (name.indexOf(' ')>=0){
             return [false,"Should not contain a space ' '. "]
@@ -47,7 +47,7 @@ const ValidateHelper = {
 
     passwordCheck(password){
         if (password.length<3 || password.length>20){
-            return [false,"Should be between 4-20 characters"]
+            return [false,"Should be between 3-20 characters"]
         }
         if (password.startsWith(' ')||password.startsWith(' ')){
             return [false,"Should not begin or end with a space ' '. "]

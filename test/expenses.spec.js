@@ -54,11 +54,11 @@ describe('Expenses',()=>{
             return db.raw('truncate trafus_expenses restart identity')
         })
         context('Correct data provided for a post',()=>{
-            it('Returns 204 and expense added into table',()=>{
+            it('Returns 200 and expense added into table',()=>{
                 return supertest(app)
                     .post('/api/expenses/')
                     .send(fixture.expenses[0])
-                    .expect(204)
+                    .expect(200)
                     .then(()=>{
                         return supertest(app)
                             .get('/api/expenses/')

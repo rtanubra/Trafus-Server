@@ -41,7 +41,7 @@ expensesRouter
                 if(!expense){
                     return res.status(404).json({error:`Category does not exist`}) 
                 }
-                return res.status(204).json(expense)
+                return res.status(200).json(expense)
             })
     })
 

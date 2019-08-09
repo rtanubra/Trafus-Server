@@ -15,6 +15,9 @@ const TeamsService = {
     },
     getTeamById(db,id){
         return db.select("*").from('trafus_teams').where({id}).first()
+    },
+    getTeamByName(db,name){
+        return db.select("*").from("trafus_teams").where({name}).first()
     }
 }
 

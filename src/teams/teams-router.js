@@ -33,16 +33,15 @@ teamsRouter
             }
             newTeam.password = password
         }
-        TeamsService.getAllTeams(db).then(teams=>{
-            const teamsNames = teams.map(team=>{
-                return team.name
-            })
-            if (teamsNames.indexOf(name) > -1){
+        TeamsService.getTeamByName(db,name).then(team=>{
+            if(team){
                 return res.status(400).json({error:`${name} -team name is currently in use, pick another.`})
             }
-            TeamsService.postTeam(db,newTeam).then((team)=>{
+            else{
+                TeamsService.postTeam(db,newTeam).then((team)=>{
                 return res.status(200).json(team[0])
-            })
+                })
+            }
         })
     })
 
