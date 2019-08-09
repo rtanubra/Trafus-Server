@@ -2,7 +2,6 @@ const app = require('../src/app')
 const knex = require('knex')
 require('dotenv').config()
 const fixture = require('../fixtures/fixtures')
-const testHelpers = require('../fixtures/testHelpers')
 
 
 describe('categories' ,()=>{
